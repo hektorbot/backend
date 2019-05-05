@@ -1,0 +1,7 @@
+django
+django-q
+redis
+polling
+python-dotenv
+floyd-cli
+Pillow
