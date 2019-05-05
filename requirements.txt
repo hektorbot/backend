@@ -5,3 +5,4 @@ polling
 python-dotenv
 floyd-cli
 Pillow
+gunicorn
