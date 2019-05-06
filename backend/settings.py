@@ -116,8 +116,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_ROOT = os.getenv("STATIC_ROOT")
+STATIC_ROOT = os.getenv("STATIC_ROOT", "")
 STATIC_URL = "/static/"
+
+# User-uploaded files storage
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Django Q
 # https://django-q.readthedocs.io/en/latest/configure.html

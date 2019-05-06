@@ -30,30 +30,43 @@ def transfer_style(image_instance):
         "{}[A-Za-z0-9]+".format(os.getenv("FLOYD_PATTERN_ENDPOINT")), out
     )[0]
     endpoint_health = endpoint + "/health"
-    polling.poll(
-        lambda: requests.get(endpoint_health).status_code == 200,
-        step=3,
-        poll_forever=True,
-    )
-    job_id = str(uuid.uuid4())
-    image_instance.job_id = job_id
-    image_instance.job_name = job_name
-    image_instance.save()
-    cb_url = (
-        "https://" + os.getenv("APP_HOST") + reverse("style-transfer-result-handler")
-    )
-    check_output(
-        """
-        curl -F "input=@{}" -F "style=@{}" -F "job_id={}" -F "cb_url={}" {}
-        """.format(
-            image_instance.input_file,
-            image_instance.style_file,
-            job_id,
-            cb_url,
-            endpoint,
-        ),
-        shell=True,
-    )
+    try:
+        polling.poll(
+            lambda: requests.get(endpoint_health).status_code == 200,
+            step=3,
+            poll_forever=False,
+            timeout=120,
+        )
+        job_id = str(uuid.uuid4())
+        cb_url = (
+            "https://"
+            + os.getenv("APP_HOST")
+            + reverse("style-transfer-result-handler")
+        )
+        check_output(
+            """
+            curl \
+                -F "input=@{}" \
+                -F "style=@{}" \
+                -F "job_id={}" \
+                -F "cb_url={}" \
+                {}
+            """.format(
+                image_instance.input_file,
+                image_instance.style_file,
+                job_id,
+                cb_url,
+                endpoint,
+            ),
+            shell=True,
+        )
+        image_instance.job_id = job_id
+        image_instance.job_name = job_name
+        image_instance.save()
+    except:
+        image_instance.has_failed = True
+        image_instance.save()
+    return
 
 
 def handle_result(request):
@@ -75,4 +88,16 @@ def handle_result(request):
         ),
         shell=True,
     )
+    return
 
+
+def get_images(page=1, per_page=20):
+    from django.core.paginator import Paginator
+    from django.db.models import Q
+
+    images_list = Image.objects.filter(
+        ~Q(neural_output_file = "") & ~Q(neural_output_file = None) & Q(has_failed = False)
+    )
+    paginator = Paginator(images_list, per_page)
+    images = paginator.get_page(page)
+    return images

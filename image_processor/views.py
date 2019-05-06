@@ -32,3 +32,7 @@ def handle_result(request):
     service.handle_result(request)
     return HttpResponse("OK")
 
+
+def results_list(request):
+    images = service.get_images()
+    return render(request, "image_processor/list.html", {"images": images})

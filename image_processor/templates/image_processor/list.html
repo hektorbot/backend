@@ -1,0 +1,7 @@
+<ul>
+  {% for image in images %}
+  <li>
+    <img src="{{ image.neural_output_file.url }}" />
+  </li>
+  {% endfor %}
+</ul>
