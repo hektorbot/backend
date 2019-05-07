@@ -5,22 +5,25 @@ import polling
 import uuid
 from subprocess import check_output
 from django.urls import reverse
+from django.conf import settings
 from .models import Image
 
 
 def transfer_style(image_instance):
     out = check_output(
         """
-        cd {};
-        floyd login -k {};
-        floyd run \
+        cd {floyd_project_dir};
+        {floyd_bin} login -k {floyd_api_key};
+        {floyd_bin} run \
             --env tensorflow-1.12 \
             --gpu2 \
             --max-runtime 900 \
             --data floydhub/datasets/imagenet-vgg-verydeep-19/3:vgg \
             --mode serve;
         """.format(
-            os.getenv("FLOYD_PROJECT_DIR"), os.getenv("FLOYD_API_KEY")
+            floyd_bin=os.getenv("FLOYD_BIN_PATH"),
+            floyd_project_dir=os.getenv("FLOYD_PROJECT_DIR"),
+            floyd_api_key=os.getenv("FLOYD_API_KEY"),
         ),
         shell=True,
     )
@@ -52,8 +55,8 @@ def transfer_style(image_instance):
                 -F "cb_url={}" \
                 {}
             """.format(
-                image_instance.input_file,
-                image_instance.style_file,
+                os.path.join(settings.MEDIA_ROOT, image_instance.input_file.path),
+                os.path.join(settings.MEDIA_ROOT, image_instance.style_file.path),
                 job_id,
                 cb_url,
                 endpoint,
@@ -76,15 +79,15 @@ def handle_result(request):
     job_name = image_instance.job_name
     check_output(
         """
-        cd {};
-        floyd login -k {};
-        floyd stop {};
-        floyd delete -y {};
+        cd {floyd_project_dir};
+        {floyd_bin} login -k {floyd_api_key};
+        {floyd_bin} stop {job_name};
+        {floyd_bin} delete -y {job_name};
         """.format(
-            os.getenv("FLOYD_PROJECT_DIR"),
-            os.getenv("FLOYD_API_KEY"),
-            job_name,
-            job_name,
+            floyd_bin=os.getenv("FLOYD_BIN_PATH"),
+            floyd_project_dir=os.getenv("FLOYD_PROJECT_DIR"),
+            floyd_api_key=os.getenv("FLOYD_API_KEY"),
+            job_name=job_name,
         ),
         shell=True,
     )
@@ -96,7 +99,7 @@ def get_images(page=1, per_page=20):
     from django.db.models import Q
 
     images_list = Image.objects.filter(
-        ~Q(neural_output_file = "") & ~Q(neural_output_file = None) & Q(has_failed = False)
+        ~Q(neural_output_file="") & ~Q(neural_output_file=None) & Q(has_failed=False)
     )
     paginator = Paginator(images_list, per_page)
     images = paginator.get_page(page)
