@@ -100,7 +100,7 @@ def get_images(page=1, per_page=20):
 
     images_list = Image.objects.filter(
         ~Q(neural_output_file="") & ~Q(neural_output_file=None) & Q(has_failed=False)
-    )
+    ).order_by("-create_date")
     paginator = Paginator(images_list, per_page)
     images = paginator.get_page(page)
     return images

@@ -34,5 +34,6 @@ def handle_result(request):
 
 
 def results_list(request):
-    images = service.get_images()
+    page = request.GET.get("page")
+    images = service.get_images(page=page)
     return render(request, "image_processor/list.html", {"images": images})
