@@ -5,6 +5,8 @@ from PIL import Image as PILImage
 
 
 class Image(models.Model):
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now=True)
     job_id = models.CharField(max_length=255, default="")
     job_name = models.CharField(max_length=255, default="")
     input_file = models.FileField(upload_to="%Y/%m/%d/")
