@@ -121,6 +121,7 @@ STATIC_URL = "/static/"
 
 # User-uploaded files storage
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 # Django Q
 # https://django-q.readthedocs.io/en/latest/configure.html
