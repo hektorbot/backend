@@ -1,10 +1,25 @@
-<ul>
+<table>
   {% for image in images %}
-  <li>
-    <img src="{{ image.neural_output_file.url }}" />
-  </li>
+  <tr>
+    <td class="info">
+      <div>
+        <img class="thumbnail" src="{{ image.input_file.url }}" /> +
+        <img class="thumbnail" src="{{ image.style_file.url }}" />
+      </div>
+      <ul>
+        <li>--iterations: {{ image.st_iterations }}</li>
+        <li>--style-layer-weight-exp: {{ image.st_style_layer_weight_exp }}</li>
+        <li>--content-weight-blend: {{ image.st_content_weight_blend }}</li>
+        <li>--pooling: {{ image.st_pooling }}</li>
+        <li>--preserve-colors: {{ image.st_preserve_colors }}</li>
+      </ul>
+    </td>
+    <td>
+      <img src="{{ image.neural_output_file.url }}" />
+    </td>
+  </tr>
   {% endfor %}
-</ul>
+</table>
 
 <div class="pagination">
   <span class="step-links">
@@ -23,3 +38,13 @@
     {% endif %}
   </span>
 </div>
+
+<style lang="css">
+  img {
+    max-width: 100%;
+  }
+  img.thumbnail {
+    max-width: 120px;
+    max-height: 120px;
+  }
+</style>
