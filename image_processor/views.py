@@ -20,6 +20,7 @@ def style_transfer(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             image_instance = form.save()
+            # service.transfer_style(image_instance)
             async_task("image_processor.service.transfer_style", image_instance)
             return HttpResponse("Style transfer started")
     else:

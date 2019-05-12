@@ -2,6 +2,7 @@ import os
 from django.db import models
 from django.conf import settings
 from PIL import Image as PILImage
+from .validators import validate_neural_content_weight_blend
 
 
 class Image(models.Model):
@@ -11,6 +12,17 @@ class Image(models.Model):
     job_name = models.CharField(max_length=255, default="")
     input_file = models.FileField(upload_to="%Y/%m/%d/")
     style_file = models.FileField(upload_to="%Y/%m/%d/")
+
+    st_iterations = models.IntegerField(default=1000)
+    st_style_layer_weight_exp = models.FloatField(
+        default=1.0, validators=[validate_neural_content_weight_blend]
+    )
+    st_content_weight_blend = models.FloatField(default=1.0)
+    st_pooling = models.CharField(
+        max_length=3, default="avg", choices=(("avg", "avg"), ("max", "max"))
+    )
+    st_preserve_colors = models.BooleanField(default=False)
+
     neural_output_file = models.FileField(
         upload_to="neural_style/%Y/%m/%d/", default=None, blank=True, null=True
     )

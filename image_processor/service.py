@@ -33,6 +33,10 @@ def transfer_style(image_instance):
         "{}[A-Za-z0-9]+".format(os.getenv("FLOYD_PATTERN_ENDPOINT")), out
     )[0]
     endpoint_health = endpoint + "/health"
+    job_id = str(uuid.uuid4())
+    image_instance.job_id = job_id
+    image_instance.job_name = job_name
+    image_instance.save()
     try:
         polling.poll(
             lambda: requests.get(endpoint_health).status_code == 200,
@@ -40,33 +44,41 @@ def transfer_style(image_instance):
             poll_forever=False,
             timeout=120,
         )
-        job_id = str(uuid.uuid4())
         cb_url = (
             "https://"
             + os.getenv("APP_HOST")
             + reverse("style-transfer-result-handler")
         )
-        check_output(
-            """
+        curl_cmd = """
             curl \
-                -F "input=@{}" \
-                -F "style=@{}" \
-                -F "job_id={}" \
-                -F "cb_url={}" \
-                {}
+                -F "input=@{input_file}" \
+                -F "style=@{style_file}" \
+                -F "job_id={job_id}" \
+                -F "cb_url={cb_url}" \
+                -F "iterations={iterations}" \
+                -F "style_layer_weight_exp={style_layer_weight_exp}" \
+                -F "content_weight_blend={content_weight_blend}" \
+                -F "pooling={pooling}" \
+                -F "preserve_color={preserve_color}" \
+                {endpoint}
             """.format(
-                os.path.join(settings.MEDIA_ROOT, image_instance.input_file.path),
-                os.path.join(settings.MEDIA_ROOT, image_instance.style_file.path),
-                job_id,
-                cb_url,
-                endpoint,
+            input_file=os.path.join(
+                settings.MEDIA_ROOT, image_instance.input_file.path
             ),
-            shell=True,
+            style_file=os.path.join(
+                settings.MEDIA_ROOT, image_instance.style_file.path
+            ),
+            job_id=job_id,
+            cb_url=cb_url,
+            iterations=image_instance.st_iterations,
+            style_layer_weight_exp=image_instance.st_style_layer_weight_exp,
+            content_weight_blend=image_instance.st_content_weight_blend,
+            pooling=image_instance.st_pooling,
+            preserve_color="1" if image_instance.st_preserve_colors else "0",
+            endpoint=endpoint,
         )
-        image_instance.job_id = job_id
-        image_instance.job_name = job_name
-        image_instance.save()
-    except:
+        check_output(curl_cmd, shell=True)
+    except Exception as e:
         image_instance.has_failed = True
         image_instance.save()
     return
