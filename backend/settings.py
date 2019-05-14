@@ -12,8 +12,18 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 from dotenv import load_dotenv, find_dotenv
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 load_dotenv(find_dotenv())
+
+# Init sentry
+sentry_dsn = os.getenv("SENTRY_DSN")
+app_env = os.getenv("APP_ENV", "production")
+if sentry_dsn:
+    sentry_sdk.init(
+        dsn=sentry_dsn, integrations=[DjangoIntegration()], environment=app_env
+    )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

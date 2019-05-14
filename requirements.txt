@@ -6,3 +6,4 @@ python-dotenv
 floyd-cli
 Pillow
 gunicorn
+sentry-sdk==0.7.14
