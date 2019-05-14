@@ -2,28 +2,14 @@ import os
 from django.db import models
 from django.conf import settings
 from PIL import Image as PILImage
-from .validators import validate_neural_content_weight_blend
 
 
 class Image(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    job_id = models.CharField(max_length=255, default="")
-    job_name = models.CharField(max_length=255, default="")
-    input_file = models.FileField(upload_to="%Y/%m/%d/")
-    style_file = models.FileField(upload_to="%Y/%m/%d/")
-
-    st_iterations = models.IntegerField(default=1000)
-    st_style_layer_weight_exp = models.FloatField(
-        default=1.0, validators=[validate_neural_content_weight_blend]
-    )
-    st_content_weight_blend = models.FloatField(default=1.0)
-    st_pooling = models.CharField(
-        max_length=3, default="avg", choices=(("avg", "avg"), ("max", "max"))
-    )
-    st_preserve_colors = models.BooleanField(default=False)
-
-    neural_output_file = models.FileField(
+    input_file = models.ImageField(upload_to="%Y/%m/%d/")
+    style_file = models.ImageField(upload_to="%Y/%m/%d/")
+    neural_output_file = models.ImageField(
         upload_to="neural_style/%Y/%m/%d/", default=None, blank=True, null=True
     )
     has_failed = models.BooleanField(default=False)

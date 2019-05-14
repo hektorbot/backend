@@ -1,9 +1,8 @@
 django
 django-q
 redis
-polling
 python-dotenv
-floyd-cli
 Pillow
 gunicorn
 sentry-sdk==0.7.14
+requests
