@@ -15,6 +15,7 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
+@csrf_exempt
 def style_transfer(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
