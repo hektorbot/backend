@@ -9,6 +9,9 @@ class Artwork(models.Model):
     update_date = models.DateTimeField(auto_now=True)
     input_file = models.ImageField(upload_to="%Y/%m/%d/")
     style_file = models.ImageField(upload_to="%Y/%m/%d/")
+    colored_file = models.ImageField(
+        upload_to="%Y/%m/%d/", default=None, blank=True, null=True
+    )
     neural_output_file = models.ImageField(
         upload_to="neural_style/%Y/%m/%d/", default=None, blank=True, null=True
     )

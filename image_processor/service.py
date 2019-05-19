@@ -1,14 +1,38 @@
 import os
 import requests
 import re
+from random import randrange
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.conf import settings
+from PIL import Image, ImageDraw
 from .models import Artwork
 
 
 def make_artwork(artwork):
+    add_colored_slice(artwork)
     transfer_style(artwork)
+    return
+
+
+def add_colored_slice(artwork):
+    from io import BytesIO
+    from django.core.files import File
+
+    slice_color = os.getenv("COLORED_SLICE_COLOR", "#00ff00")
+    slice_width = float(os.getenv("COLORED_SLICE_WIDTH", 0.05))
+    image = Image.open(artwork.style_file.path)
+    # Determine slice width and position
+    slice_width_px = image.width * slice_width
+    x0 = randrange(0, round(image.width - slice_width))
+    x1 = x0 + slice_width_px
+    # Draw colored slice
+    draw = ImageDraw.Draw(image)
+    draw.rectangle([(x0, 0), (x1, image.height)], fill=slice_color)
+    # Save the image
+    image_io = BytesIO()
+    image.save(image_io, format="JPEG")
+    artwork.colored_file.save("colored.jpg", File(image_io))
     return
 
 
@@ -21,10 +45,10 @@ def transfer_style(artwork):
                     os.path.join(settings.MEDIA_ROOT, artwork.input_file.path), "rb"
                 ),
                 "style": open(
-                    os.path.join(settings.MEDIA_ROOT, artwork.style_file.path), "rb"
+                    os.path.join(settings.MEDIA_ROOT, artwork.colored_file.path), "rb"
                 ),
             },
-            headers={"api-key": "e75c86af-0c17-4270-8a0f-51ea98a272ee"},
+            headers={"api-key": os.getenv("DEEPAI_API_KEY")},
         )
         json = r.json()
         r = requests.get(json["output_url"])

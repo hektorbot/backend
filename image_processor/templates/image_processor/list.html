@@ -2,6 +2,12 @@
   {% for artwork in artworks %}
   <tr>
     <td>
+      <div>
+        <img class="thumbnail" src="{{ artwork.input_file.url }}" /> +
+        <img class="thumbnail" src="{{ artwork.colored_file.url }}" />
+      </div>
+    </td>
+    <td>
       <img src="{{ artwork.neural_output_file.url }}" />
     </td>
   </tr>
