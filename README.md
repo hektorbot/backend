@@ -1,3 +1,7 @@
+[![Known Vulnerabilities](https://snyk.io/test/github/hektorbot/backend/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/hektorbot/backend?targetFile=requirements.txt)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
+
+
 # Hektor backend
 
 This is Hektor's Python backend. It's responsible for creating images based on a set of rules defined by the artist, Isabelle Gagné. It also provides a REST API to let the frontend app retrieve the data it needs.
