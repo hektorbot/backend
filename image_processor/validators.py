@@ -7,4 +7,3 @@ def validate_neural_content_weight_blend(value):
         raise ValidationError(
             _("%(value)s should be in range [0.0; 1.0]"), params={"value": value}
         )
-
