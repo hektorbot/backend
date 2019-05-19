@@ -1,21 +1,8 @@
 <table>
-  {% for image in images %}
+  {% for artwork in artworks %}
   <tr>
-    <td class="info">
-      <div>
-        <img class="thumbnail" src="{{ image.input_file.url }}" /> +
-        <img class="thumbnail" src="{{ image.style_file.url }}" />
-      </div>
-      <ul>
-        <li>--iterations: {{ image.st_iterations }}</li>
-        <li>--style-layer-weight-exp: {{ image.st_style_layer_weight_exp }}</li>
-        <li>--content-weight-blend: {{ image.st_content_weight_blend }}</li>
-        <li>--pooling: {{ image.st_pooling }}</li>
-        <li>--preserve-colors: {{ image.st_preserve_colors }}</li>
-      </ul>
-    </td>
     <td>
-      <img src="{{ image.neural_output_file.url }}" />
+      <img src="{{ artwork.neural_output_file.url }}" />
     </td>
   </tr>
   {% endfor %}
@@ -23,18 +10,18 @@
 
 <div class="pagination">
   <span class="step-links">
-    {% if images.has_previous %}
+    {% if artworks.has_previous %}
     <a href="?page=1">&laquo; first</a>
-    <a href="?page={{ images.previous_page_number }}">previous</a>
+    <a href="?page={{ artworks.previous_page_number }}">previous</a>
     {% endif %}
 
     <span class="current">
-      Page {{ images.number }} of {{ images.paginator.num_pages }}.
+      Page {{ artworks.number }} of {{ artworks.paginator.num_pages }}.
     </span>
 
-    {% if images.has_next %}
-    <a href="?page={{ images.next_page_number }}">next</a>
-    <a href="?page={{ images.paginator.num_pages }}">last &raquo;</a>
+    {% if artworks.has_next %}
+    <a href="?page={{ artworks.next_page_number }}">next</a>
+    <a href="?page={{ artworks.paginator.num_pages }}">last &raquo;</a>
     {% endif %}
   </span>
 </div>

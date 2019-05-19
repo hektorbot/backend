@@ -1,8 +1,8 @@
 from django.forms import ModelForm
-from .models import Image
+from .models import Artwork
 
 
 class UploadFileForm(ModelForm):
     class Meta:
-        model = Image
+        model = Artwork
         fields = ["input_file", "style_file"]

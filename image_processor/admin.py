@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Image
+from .models import Artwork
 
 
-class ImageAdmin(admin.ModelAdmin):
+class ArtworkAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Image, ImageAdmin)
+admin.site.register(Artwork, ArtworkAdmin)
