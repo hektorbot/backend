@@ -8,8 +8,12 @@
       </div>
     </td>
     <td>
+      <p>Style transfer output</p>
       <img src="{{ artwork.style_transfered_image.url }}" />
-      <img class="thumbnail" src="{{ artwork.visually_similar_image.url }}" />
+    </td>
+    <td>
+      <p>Visually similar to style transfer</p>
+      <img src="{{ artwork.visually_similar_image.url }}" />
     </td>
   </tr>
   {% endfor %}
