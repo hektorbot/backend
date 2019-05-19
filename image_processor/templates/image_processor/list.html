@@ -3,12 +3,13 @@
   <tr>
     <td>
       <div>
-        <img class="thumbnail" src="{{ artwork.input_file.url }}" /> +
-        <img class="thumbnail" src="{{ artwork.colored_file.url }}" />
+        <img class="thumbnail" src="{{ artwork.input_image.url }}" /> +
+        <img class="thumbnail" src="{{ artwork.colored_image.url }}" />
       </div>
     </td>
     <td>
-      <img src="{{ artwork.neural_output_file.url }}" />
+      <img src="{{ artwork.style_transfered_image.url }}" />
+      <img class="thumbnail" src="{{ artwork.visually_similar_image.url }}" />
     </td>
   </tr>
   {% endfor %}

@@ -12,16 +12,16 @@ from .models import Artwork
 def make_artwork(artwork):
     add_colored_slice(artwork)
     transfer_style(artwork)
+    find_visually_similar_image(artwork)
     return
 
 
 def add_colored_slice(artwork):
     from io import BytesIO
-    from django.core.files import File
 
     slice_color = os.getenv("COLORED_SLICE_COLOR", "#00ff00")
     slice_width = float(os.getenv("COLORED_SLICE_WIDTH", 0.05))
-    image = Image.open(artwork.style_file.path)
+    image = Image.open(artwork.style_image.path)
     # Determine slice width and position
     slice_width_px = image.width * slice_width
     x0 = randrange(0, round(image.width - slice_width))
@@ -32,8 +32,33 @@ def add_colored_slice(artwork):
     # Save the image
     image_io = BytesIO()
     image.save(image_io, format="JPEG")
-    artwork.colored_file.save("colored.jpg", File(image_io))
+    artwork.colored_image.save("colored.jpg", File(image_io))
     return
+
+
+def find_visually_similar_image(artwork):
+    from io import FileIO
+    from google.cloud import vision
+    from google.cloud.vision import types
+    from mimetypes import guess_type, guess_extension
+    from urllib import request
+
+    client = vision.ImageAnnotatorClient()
+    content = FileIO(artwork.style_transfered_image.path).read()
+    image = types.Image(content=content)
+    response = client.web_detection(image=image)
+    mimeType = None
+
+    for similar_image in response.web_detection.visually_similar_images:
+        [mimeType, encoding] = guess_type(similar_image.url)
+        if mimeType is not None:
+            extension = guess_extension(type=mimeType)
+            print("visually similar:", similar_image.url)
+            result = request.urlretrieve(similar_image.url)
+            artwork.visually_similar_image.save(
+                "visually_similar.{}".format(extension), File(open(result[0], "rb"))
+            )
+            return
 
 
 def transfer_style(artwork):
@@ -42,10 +67,10 @@ def transfer_style(artwork):
             "{}/neural-style".format(os.getenv("DEEPAI_API_ROOT")),
             files={
                 "content": open(
-                    os.path.join(settings.MEDIA_ROOT, artwork.input_file.path), "rb"
+                    os.path.join(settings.MEDIA_ROOT, artwork.input_image.path), "rb"
                 ),
                 "style": open(
-                    os.path.join(settings.MEDIA_ROOT, artwork.colored_file.path), "rb"
+                    os.path.join(settings.MEDIA_ROOT, artwork.colored_image.path), "rb"
                 ),
             },
             headers={"api-key": os.getenv("DEEPAI_API_KEY")},
@@ -58,7 +83,7 @@ def transfer_style(artwork):
         img_tmp.flush()
         output_filename = "{}.{}".format(json["id"], type)
 
-        artwork.neural_output_file.save(output_filename, File(img_tmp))
+        artwork.style_transfered_image.save(output_filename, File(img_tmp))
     except Exception as e:
         artwork.has_failed = True
         artwork.save()
@@ -70,7 +95,9 @@ def get_artworks(page=1, per_page=20):
     from django.db.models import Q
 
     artworks_list = Artwork.objects.filter(
-        ~Q(neural_output_file="") & ~Q(neural_output_file=None) & Q(has_failed=False)
+        ~Q(style_transfered_image="")
+        & ~Q(style_transfered_image=None)
+        & Q(has_failed=False)
     ).order_by("-create_date")
     paginator = Paginator(artworks_list, per_page)
     artworks = paginator.get_page(page)

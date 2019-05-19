@@ -5,4 +5,4 @@ from .models import Artwork
 class UploadFileForm(ModelForm):
     class Meta:
         model = Artwork
-        fields = ["input_file", "style_file"]
+        fields = ["input_image", "style_image"]

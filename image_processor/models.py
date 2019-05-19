@@ -7,23 +7,26 @@ from PIL import Image
 class Artwork(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
-    input_file = models.ImageField(upload_to="%Y/%m/%d/")
-    style_file = models.ImageField(upload_to="%Y/%m/%d/")
-    colored_file = models.ImageField(
+    input_image = models.ImageField(upload_to="%Y/%m/%d/")
+    style_image = models.ImageField(upload_to="%Y/%m/%d/")
+    colored_image = models.ImageField(
         upload_to="%Y/%m/%d/", default=None, blank=True, null=True
     )
-    neural_output_file = models.ImageField(
+    style_transfered_image = models.ImageField(
         upload_to="neural_style/%Y/%m/%d/", default=None, blank=True, null=True
+    )
+    visually_similar_image = models.ImageField(
+        upload_to="%Y/%m/%d/", default=None, blank=True, null=True
     )
     has_failed = models.BooleanField(default=False)
 
     def save(self):
         super(Artwork, self).save()
-        input_filepath = self.input_file.path
-        style_filepath = self.style_file.path
-        input_image = Image.open(input_filepath)
-        style_image = Image.open(style_filepath)
+        input_image_path = self.input_image.path
+        style_image_path = self.style_image.path
+        input_image = Image.open(input_image_path)
+        style_image = Image.open(style_image_path)
         input_image.thumbnail((1200, 1200))
         style_image.thumbnail((1200, 1200))
-        input_image.save(input_filepath)
-        style_image.save(style_filepath)
+        input_image.save(input_image_path)
+        style_image.save(style_image_path)
