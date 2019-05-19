@@ -1,6 +1,7 @@
 venv/
 media/
 deployments/
+service-account.json
 
 # Created by https://www.gitignore.io
 
