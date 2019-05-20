@@ -57,7 +57,7 @@ def find_visually_similar_image(artwork):
             extension = guess_extension(type=mimeType)
             result = request.urlretrieve(similar_image.url)
             artwork.visually_similar_image.save(
-                "visually_similar_{}.{}".format(artwork.id, extension),
+                "visually_similar_{}{}".format(artwork.id, extension),
                 File(open(result[0], "rb")),
             )
             return
