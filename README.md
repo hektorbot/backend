@@ -54,20 +54,22 @@ $ cp .env.example .env
 $ django manage.py migrate
 ```
 
-6. Run the app:
+6. A Vision API-authorized GCP service account key is required for reverse image search, make sure one is saved locally and that the `GOOGLE_APPLICATION_CREDENTIALS` references it properly
+
+7. [Pixelsort](https://github.com/satyarth/pixelsort) must be cloned locally and the `PIXEL_SORT_PATH` variable should be the absolute path to `pixelsort.py`
+
+
+8. Run the app:
 
 ```sh
 $ django manage.py runserver
 ```
 
-7. To enable image processing, you'll need to start django-q's cluster in the background (make sure Redis server is running first):
+9. To enable image processing, you'll need to start django-q's cluster in the background (make sure Redis server is running first):
 
 ```sh
 $ nohup python manage.py qcluster&
 ```
 
-8. A Vision API-authorized GCP service account key is required for reverse image search, make sure one is saved locally and that the `GOOGLE_APPLICATION_CREDENTIALS` references it properly
-
-9. [Pixelsort](https://github.com/satyarth/pixelsort) must be cloned locally and the `PIXEL_SORT_PATH` variable should be the absolute path to `pixelsort.py`
 
 The app should now be running on [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
