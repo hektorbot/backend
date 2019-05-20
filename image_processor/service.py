@@ -34,7 +34,7 @@ def add_colored_slice(artwork):
     # Save the image
     image_io = BytesIO()
     image.save(image_io, format="JPEG")
-    artwork.colored_image.save("colored.jpg", File(image_io))
+    artwork.colored_image.save("colored_{}.jpg".format(artwork.id), File(image_io))
     return
 
 
@@ -57,7 +57,8 @@ def find_visually_similar_image(artwork):
             extension = guess_extension(type=mimeType)
             result = request.urlretrieve(similar_image.url)
             artwork.visually_similar_image.save(
-                "visually_similar.{}".format(extension), File(open(result[0], "rb"))
+                "visually_similar_{}.{}".format(artwork.id, extension),
+                File(open(result[0], "rb")),
             )
             return
 
@@ -82,7 +83,7 @@ def transfer_style(artwork):
         img_tmp = NamedTemporaryFile(delete=True)
         img_tmp.write(r.content)
         img_tmp.flush()
-        output_filename = "{}.{}".format(json["id"], type)
+        output_filename = "style_transferred_{}.{}".format(artwork.id, type)
 
         artwork.style_transferred_image.save(output_filename, File(img_tmp))
     except Exception as e:
@@ -105,7 +106,9 @@ def pixel_sort(artwork):
         os.getenv("PYTHON_PATH"), pixel_sort_path, artwork.input_image.path, output_file
     )
     os.system(cmd)
-    artwork.pixel_sorted_image.save("pixel_sorted.png", File(open(output_file, "rb")))
+    artwork.pixel_sorted_image.save(
+        "pixel_sorted_{}.png".format(artwork.id), File(open(output_file, "rb"))
+    )
     os.remove(output_file)
     return
 
@@ -191,7 +194,7 @@ def make_final_image(artwork):
         canvas.paste(slice, (slice_pos_x, slice_pos_y))
     canvas_io = BytesIO()
     canvas.save(canvas_io, format="JPEG")
-    artwork.final_image.save("final.jpg", File(canvas_io))
+    artwork.final_image.save("final_{}.jpg".format(artwork.id), File(canvas_io))
 
 
 def get_artworks(page=1, per_page=20):

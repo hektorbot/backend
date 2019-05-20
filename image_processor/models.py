@@ -13,7 +13,7 @@ class Artwork(models.Model):
         upload_to="%Y/%m/%d/", default=None, blank=True, null=True
     )
     style_transferred_image = models.ImageField(
-        upload_to="neural_style/%Y/%m/%d/", default=None, blank=True, null=True
+        upload_to="%Y/%m/%d/", default=None, blank=True, null=True
     )
     visually_similar_image = models.ImageField(
         upload_to="%Y/%m/%d/", default=None, blank=True, null=True
