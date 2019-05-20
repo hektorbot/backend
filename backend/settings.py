@@ -137,3 +137,21 @@ MEDIA_URL = "/media/"
 # https://django-q.readthedocs.io/en/latest/configure.html
 
 Q_CLUSTER = {"name": "hektor", "redis": {"password": os.getenv("REDIS_PASSWORD", None)}}
+
+# Logging
+log_file = os.getenv("LOG_FILE", None)
+if log_file is not None:
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "handlers": {
+            "file": {
+                "level": "DEBUG",
+                "class": "logging.FileHandler",
+                "filename": log_file,
+            }
+        },
+        "loggers": {
+            "django": {"handlers": ["file"], "level": "DEBUG", "propagate": True}
+        },
+    }
