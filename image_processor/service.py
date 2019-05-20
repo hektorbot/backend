@@ -54,13 +54,18 @@ def find_visually_similar_image(artwork):
     for similar_image in response.web_detection.visually_similar_images:
         [mimeType, encoding] = guess_type(similar_image.url)
         if mimeType is not None:
-            extension = guess_extension(type=mimeType)
-            result = request.urlretrieve(similar_image.url)
-            artwork.visually_similar_image.save(
-                "visually_similar_{}{}".format(artwork.id, extension),
-                File(open(result[0], "rb")),
-            )
+            try:
+                extension = guess_extension(type=mimeType)
+                result = request.urlretrieve(similar_image.url)
+                artwork.visually_similar_image.save(
+                    "visually_similar_{}{}".format(artwork.id, extension),
+                    File(open(result[0], "rb")),
+                )
+                return
+            except:
+                pass
             return
+    return
 
 
 def transfer_style(artwork):
@@ -163,7 +168,7 @@ def make_final_image(artwork):
                 (
                     slice_pos_x,
                     slice_pos_y,
-                    slice_width_px,
+                    slice_pos_x + slice_width_px,
                     slice_pos_y + slice_height_px,
                 )
             )
@@ -184,12 +189,17 @@ def make_final_image(artwork):
         slice_max_height_px = round(
             float(os.getenv("VISUALLY_SIMILAR_SLICE_MAX_HEIGHT", 0.06)) * canvas.height
         )
-        slice_width_px = randrange(slices_min_width_px, slices_max_width_px)
-        slice_height_px = randrange(slices_min_height_px, slices_max_height_px)
+        slice_width_px = randrange(slice_min_width_px, slice_max_width_px)
+        slice_height_px = randrange(slice_min_height_px, slice_max_height_px)
         slice_pos_x = randrange(0, canvas.width - slice_width_px)
         slice_pos_y = randrange(0, canvas.height - slice_height_px)
         slice = image.crop(
-            (slice_pos_x, slice_pos_y, slice_width_px, slice_pos_y + slice_height_px)
+            (
+                slice_pos_x,
+                slice_pos_y,
+                slice_pos_x + slice_width_px,
+                slice_pos_y + slice_height_px,
+            )
         )
         canvas.paste(slice, (slice_pos_x, slice_pos_y))
     canvas_io = BytesIO()
