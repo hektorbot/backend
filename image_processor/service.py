@@ -1,6 +1,7 @@
 import os
 import requests
 import re
+import uuid
 from random import randrange
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -13,6 +14,7 @@ def make_artwork(artwork):
     add_colored_slice(artwork)
     transfer_style(artwork)
     find_visually_similar_image(artwork)
+    pixel_sort(artwork)
     return
 
 
@@ -87,6 +89,27 @@ def transfer_style(artwork):
     except Exception as e:
         artwork.has_failed = True
         artwork.save()
+    return
+
+
+def pixel_sort(artwork):
+    output_filename = "{}.png".format(uuid.uuid4())
+    pixel_sort_path = os.getenv("PIXEL_SORT_PATH", "pixelsort/pixelsort.py")
+    cmd = """
+            python {} {} \
+            -a 180 \
+            -i random \
+            -r 20 \
+            -c 30 \
+            -o {}
+        """.format(
+        pixel_sort_path, artwork.input_image.path, output_filename
+    )
+    os.system(cmd)
+    artwork.pixel_sorted_image.save(
+        "pixel_sorted.png", File(open(output_filename, "rb"))
+    )
+    os.remove(output_filename)
     return
 
 

@@ -2,6 +2,7 @@ venv/
 media/
 deployments/
 service-account.json
+pixelsort/
 
 # Created by https://www.gitignore.io
 

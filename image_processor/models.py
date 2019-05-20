@@ -18,6 +18,9 @@ class Artwork(models.Model):
     visually_similar_image = models.ImageField(
         upload_to="%Y/%m/%d/", default=None, blank=True, null=True
     )
+    pixel_sorted_image = models.ImageField(
+        upload_to="%Y/%m/%d/", default=None, blank=True, null=True
+    )
     has_failed = models.BooleanField(default=False)
 
     def save(self):
