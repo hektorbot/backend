@@ -66,4 +66,8 @@ $ django manage.py runserver
 $ nohup python manage.py qcluster&
 ```
 
+8. A Vision API-authorized GCP service account key is required for reverse image search, make sure one is saved locally and that the `GOOGLE_APPLICATION_CREDENTIALS` references it properly
+
+9. [Pixelsort](https://github.com/satyarth/pixelsort) must be cloned locally and the `PIXEL_SORT_PATH` variable should be the absolute path to `pixelsort.py`
+
 The app should now be running on [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
