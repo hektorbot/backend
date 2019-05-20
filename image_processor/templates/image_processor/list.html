@@ -1,16 +1,24 @@
 {% for artwork in artworks %}
 <table>
   <tr>
-    <td><img src="{{ artwork.input_image.url }}" /></td>
     <td>
+      <p>
+        Input
+      </p>
+      <img src="{{ artwork.input_image.url }}" />
+    </td>
+    <td>
+      <p>
+        Style
+      </p>
       <img src="{{ artwork.colored_image.url }}" />
     </td>
   </tr>
   <tr>
     <td>
       <p>Style transfer output</p>
-      {% if artwork.style_transfered_image %}
-      <img src="{{ artwork.style_transfered_image.url }}" />
+      {% if artwork.style_transferred_image %}
+      <img src="{{ artwork.style_transferred_image.url }}" />
       {% endif %}
     </td>
     <td>
@@ -23,6 +31,14 @@
       <p>Pixel sorted content image</p>
       {% if artwork.pixel_sorted_image %}
       <img src="{{ artwork.pixel_sorted_image.url }}" />
+      {% endif %}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>Final image</p>
+      {% if artwork.final_image %}
+      <img src="{{ artwork.final_image.url }}" />
       {% endif %}
     </td>
   </tr>

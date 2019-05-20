@@ -12,7 +12,7 @@ class Artwork(models.Model):
     colored_image = models.ImageField(
         upload_to="%Y/%m/%d/", default=None, blank=True, null=True
     )
-    style_transfered_image = models.ImageField(
+    style_transferred_image = models.ImageField(
         upload_to="neural_style/%Y/%m/%d/", default=None, blank=True, null=True
     )
     visually_similar_image = models.ImageField(
@@ -20,6 +20,9 @@ class Artwork(models.Model):
     )
     pixel_sorted_image = models.ImageField(
         upload_to="%Y/%m/%d/", default=None, blank=True, null=True
+    )
+    final_image = models.ImageField(
+        upload_to="finals/%Y/%m/%d/", default=None, blank=True, null=True
     )
     has_failed = models.BooleanField(default=False)
 
