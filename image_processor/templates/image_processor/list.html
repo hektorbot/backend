@@ -1,23 +1,34 @@
+{% for artwork in artworks %}
 <table>
-  {% for artwork in artworks %}
+  <tr>
+    <td><img src="{{ artwork.input_image.url }}" /></td>
+    <td>
+      <img src="{{ artwork.colored_image.url }}" />
+    </td>
+  </tr>
   <tr>
     <td>
-      <div>
-        <img class="thumbnail" src="{{ artwork.input_image.url }}" /> +
-        <img class="thumbnail" src="{{ artwork.colored_image.url }}" />
-      </div>
-    </td>
-    <td>
       <p>Style transfer output</p>
+      {% if artwork.style_transfered_image %}
       <img src="{{ artwork.style_transfered_image.url }}" />
+      {% endif %}
     </td>
     <td>
       <p>Visually similar to style transfer</p>
+      {% if artwork.visually_similar_image %}
       <img src="{{ artwork.visually_similar_image.url }}" />
+      {% endif %}
+    </td>
+    <td>
+      <p>Pixel sorted content image</p>
+      {% if artwork.pixel_sorted_image %}
+      <img src="{{ artwork.pixel_sorted_image.url }}" />
+      {% endif %}
     </td>
   </tr>
-  {% endfor %}
 </table>
+
+{% endfor %}
 
 <div class="pagination">
   <span class="step-links">
@@ -41,8 +52,12 @@
   img {
     max-width: 100%;
   }
-  img.thumbnail {
-    max-width: 120px;
-    max-height: 120px;
+  table {
+    border: 1px solid black;
+    margin-bottom: 10px;
+    border-collapse: collapse;
+  }
+  table td {
+    border: 1px solid black;
   }
 </style>
