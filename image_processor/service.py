@@ -93,7 +93,7 @@ def transfer_style(artwork):
 
 
 def pixel_sort(artwork):
-    output_filename = "{}.png".format(uuid.uuid4())
+    output_file = os.path.join(settings.MEDIA_ROOT, "{}.png".format(uuid.uuid4()))
     pixel_sort_path = os.getenv("PIXEL_SORT_PATH", "pixelsort/pixelsort.py")
     cmd = """
             python {} {} \
@@ -103,13 +103,11 @@ def pixel_sort(artwork):
             -c 30 \
             -o {}
         """.format(
-        pixel_sort_path, artwork.input_image.path, output_filename
+        pixel_sort_path, artwork.input_image.path, output_file
     )
     os.system(cmd)
-    artwork.pixel_sorted_image.save(
-        "pixel_sorted.png", File(open(output_filename, "rb"))
-    )
-    os.remove(output_filename)
+    artwork.pixel_sorted_image.save("pixel_sorted.png", File(open(output_file, "rb")))
+    os.remove(output_file)
     return
 
 
