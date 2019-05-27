@@ -7,7 +7,7 @@ from random import randrange
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.conf import settings
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageEnhance
 from .models import Artwork
 
 
@@ -144,6 +144,8 @@ def make_final_image(artwork):
     if artwork.style_transferred_image:
         image = Image.open(artwork.style_transferred_image)
         image = image.resize((canvas.width, canvas.height))
+        enhancer = ImageEnhance.Sharpness(image)
+        image = enhancer.enhance(2.0)
         slices_count = int(os.getenv("STYLE_TRANSFERRED_SLICES_COUNT", 8))
         slices_min_width_px = round(
             float(os.getenv("STYLE_TRANSFERRED_SLICES_MIN_WIDTH", 0.1)) * canvas.width
