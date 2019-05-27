@@ -7,8 +7,8 @@ from random import randrange
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.conf import settings
-from PIL import Image, ImageDraw, ImageEnhance
-from .models import Artwork
+from PIL import Image, ImageDraw, ImageEnhance, ImageFont
+from .models import Artwork, Verse, AvailableVerse
 
 
 def make_artwork(artwork):
@@ -204,9 +204,49 @@ def make_final_image(artwork):
             )
         )
         canvas.paste(slice, (slice_pos_x, slice_pos_y))
+    # Insert verse
+    verse = pick_verse()
+    if verse:
+        font_path = os.path.join(
+            settings.BASE_DIR, "fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf"
+        )
+        verse_image = Image.new("RGBA", canvas.size, (255, 255, 255, 0))
+        draw = ImageDraw.Draw(verse_image)
+        font = ImageFont.truetype(font_path, 40)
+        # Setup text position
+        text_width, text_height = draw.textsize(verse, font)
+        text_pos_x = randrange(0, canvas.width - text_width)
+        text_pos_y = randrange(0, canvas.height - text_height)
+        text_rotation = randrange(-3, 3)
+        # Draw text layer
+        draw.text((text_pos_x, text_pos_y), verse, font=font, fill=(0, 0, 0, 255))
+        clipping_mask = Image.open(artwork.style_image)
+        clipping_mask = clipping_mask.resize(canvas.size)
+        verse_layer = Image.composite(clipping_mask, verse_image, verse_image)
+        verse_layer = verse_layer.rotate(text_rotation)
+        # Add text layer to main canvas
+        canvas.paste(verse_layer, (0, 0), mask=verse_layer)
     canvas_io = BytesIO()
     canvas.save(canvas_io, format="JPEG")
     artwork.final_image.save("final_{}.jpg".format(artwork.id), File(canvas_io))
+
+
+def populate_available_verses(Verse=Verse, AvailableVerse=AvailableVerse):
+    for verse in Verse.objects.all():
+        av = AvailableVerse(verse=verse)
+        av.save()
+
+
+def pick_verse():
+    av = AvailableVerse.objects.order_by("?").first()
+    if not av:
+        populate_available_verses()
+        av = AvailableVerse.objects.order_by("?").first()
+    if av:
+        text = av.verse.text
+        av.delete()
+        return text
+    return ""
 
 
 def get_artworks(page=1, per_page=20):

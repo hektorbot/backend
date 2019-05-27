@@ -36,3 +36,11 @@ class Artwork(models.Model):
         style_image.thumbnail((1200, 1200))
         input_image.save(input_image_path)
         style_image.save(style_image_path)
+
+
+class Verse(models.Model):
+    text = models.CharField(max_length=255)
+
+
+class AvailableVerse(models.Model):
+    verse = models.ForeignKey("Verse", on_delete=models.DO_NOTHING)
