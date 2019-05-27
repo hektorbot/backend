@@ -208,7 +208,7 @@ def make_final_image(artwork):
     verse = pick_verse()
     if verse:
         font_path = os.path.join(
-            settings.BASE_DIR, "fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf"
+            settings.BASE_DIR, "fonts/IBM_Plex_Mono/IBMPlexMono-Bold.ttf"
         )
         verse_image = Image.new("RGBA", canvas.size, (255, 255, 255, 0))
         draw = ImageDraw.Draw(verse_image)
