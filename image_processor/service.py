@@ -212,7 +212,7 @@ def make_final_image(artwork):
         )
         verse_image = Image.new("RGBA", canvas.size, (255, 255, 255, 0))
         draw = ImageDraw.Draw(verse_image)
-        font = ImageFont.truetype(font_path, 40)
+        font = ImageFont.truetype(font_path, 60)
         # Setup text position
         text_width, text_height = draw.textsize(verse, font)
         text_pos_x = randrange(0, canvas.width - text_width)
