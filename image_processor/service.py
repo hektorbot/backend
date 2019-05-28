@@ -210,7 +210,7 @@ def make_final_image(artwork):
         font_path = os.path.join(
             settings.BASE_DIR, "fonts/IBM_Plex_Mono/IBMPlexMono-BoldItalic.ttf"
         )
-        upscale_factor = 10
+        upscale_factor = 2
         size_upscaled = (canvas.width * upscale_factor, canvas.height * upscale_factor)
         verse_image = Image.new("RGBA", size_upscaled, (255, 255, 255, 0))
         draw = ImageDraw.Draw(verse_image)
