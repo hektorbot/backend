@@ -208,29 +208,31 @@ def make_final_image(artwork):
     verse = pick_verse()
     if verse:
         font_path = os.path.join(
-            settings.BASE_DIR, "fonts/IBM_Plex_Mono/IBMPlexMono-Bold.ttf"
+            settings.BASE_DIR, "fonts/IBM_Plex_Mono/IBMPlexMono-BoldItalic.ttf"
         )
-        verse_image = Image.new("RGBA", canvas.size, (255, 255, 255, 0))
+        upscale_factor = 10
+        size_upscaled = (canvas.width * upscale_factor, canvas.height * upscale_factor)
+        verse_image = Image.new("RGBA", size_upscaled, (255, 255, 255, 0))
         draw = ImageDraw.Draw(verse_image)
-        font = ImageFont.truetype(font_path, 60)
+        font = ImageFont.truetype(font_path, 40 * upscale_factor)
         # Setup text position
         text_width, text_height = draw.textsize(verse, font)
-        text_pos_x = randrange(0, max(canvas.width - text_width, 0))
-        text_pos_y = randrange(0, max(canvas.height - text_height, 0))
+        text_pos_x = randrange(0, max(verse_image.width - text_width, 0))
+        text_pos_y = randrange(0, max(verse_image.height - text_height, 0))
         text_rotation = randrange(-3, 3)
         # Draw text layer
         draw.text((text_pos_x, text_pos_y), verse, font=font, fill=(0, 0, 0, 255))
         clipping_mask = Image.open(artwork.style_image)
-        clipping_mask = clipping_mask.resize(canvas.size)
+        clipping_mask = clipping_mask.resize(size_upscaled)
         verse_layer = Image.composite(
             clipping_mask,
-            Image.new("RGBA", canvas.size, (255, 255, 255, 0)),
+            Image.new("RGBA", size_upscaled, (255, 255, 255, 0)),
             verse_image,
         )
         verse_layer = verse_layer.rotate(
             text_rotation, resample=Image.BILINEAR, expand=1
         )
-        verse_layer = verse_layer.resize(canvas.size)
+        verse_layer = verse_layer.resize(canvas.size, resample=Image.LANCZOS)
         # Add text layer to main canvas
         canvas.paste(verse_layer, (0, 0), mask=verse_layer)
     # Save main image
