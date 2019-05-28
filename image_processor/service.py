@@ -222,7 +222,11 @@ def make_final_image(artwork):
         draw.text((text_pos_x, text_pos_y), verse, font=font, fill=(0, 0, 0, 255))
         clipping_mask = Image.open(artwork.style_image)
         clipping_mask = clipping_mask.resize(canvas.size)
-        verse_layer = Image.composite(clipping_mask, verse_image, verse_image)
+        verse_layer = Image.composite(
+            clipping_mask,
+            Image.new("RGBA", canvas.size, (255, 255, 255, 0)),
+            verse_image,
+        )
         verse_layer = verse_layer.rotate(text_rotation)
         # Add text layer to main canvas
         canvas.paste(verse_layer, (0, 0), mask=verse_layer)
