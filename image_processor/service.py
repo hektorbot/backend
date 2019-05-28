@@ -227,7 +227,10 @@ def make_final_image(artwork):
             Image.new("RGBA", canvas.size, (255, 255, 255, 0)),
             verse_image,
         )
-        verse_layer = verse_layer.rotate(text_rotation)
+        verse_layer = verse_layer.rotate(
+            text_rotation, resample=Image.BILINEAR, expand=1
+        )
+        verse_layer = verse_layer.resize(canvas.size)
         # Add text layer to main canvas
         canvas.paste(verse_layer, (0, 0), mask=verse_layer)
     # Save main image
