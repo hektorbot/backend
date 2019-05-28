@@ -24,6 +24,9 @@ class Artwork(models.Model):
     final_image = models.ImageField(
         upload_to="finals/%Y/%m/%d/", default=None, blank=True, null=True
     )
+    thumbnail = models.ImageField(
+        upload_to="finals/%Y/%m/%d/", default=None, blank=True, null=True
+    )
     has_failed = models.BooleanField(default=False)
 
     def save(self):

@@ -17,8 +17,38 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls import url, include
+from django.db.models import Q
+from rest_framework import routers, serializers, viewsets
+from image_processor.models import Artwork
+
+
+class ArtworkSerializer(serializers.ModelSerializer):
+    full = serializers.SerializerMethodField("get_final_image")
+
+    class Meta:
+        model = Artwork
+        fields = ["full", "thumbnail"]
+        read_only_fields = ["full", "thumbnail"]
+
+    def get_final_image(self, obj):
+        request = self.context.get("request")
+        return request.build_absolute_uri(obj.final_image.url)
+
+
+class ArtworkViewSet(viewsets.ModelViewSet):
+    queryset = Artwork.objects.filter(
+        ~Q(final_image="") & ~Q(final_image=None) & Q(has_failed=False)
+    ).order_by("-create_date")
+    serializer_class = ArtworkSerializer
+
+
+router = routers.DefaultRouter()
+router.register(r"artworks", ArtworkViewSet)
+
 
 urlpatterns = [
+    url(r"^rest/", include(router.urls)),
     path("admin/", admin.site.urls),
     path("image_processor/", include("image_processor.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
