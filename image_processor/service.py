@@ -15,7 +15,8 @@ def make_artwork(artwork):
     add_colored_slice(artwork)
     transfer_style(artwork)
     find_visually_similar_image(artwork)
-    pixel_sort(artwork)
+    pixel_sort_input(artwork)
+    pixel_sort_style_transferred(artwork)
     make_final_image(artwork)
     return
 
@@ -97,7 +98,31 @@ def transfer_style(artwork):
     return
 
 
-def pixel_sort(artwork):
+def pixel_sort_style_transferred(artwork):
+    output_file = os.path.join(settings.MEDIA_ROOT, "{}.png".format(uuid.uuid4()))
+    pixel_sort_path = os.getenv("PIXEL_SORT_PATH", "pixelsort/pixelsort.py")
+    cmd = """
+            {} {} {} \
+            -a 90 \
+            -i edges \
+            -t 0.01 \
+            -o {}
+        """.format(
+        os.getenv("PYTHON_PATH"),
+        pixel_sort_path,
+        artwork.style_transferred_image.path,
+        output_file,
+    )
+    os.system(cmd)
+    artwork.style_transferred_image.save(
+        "style_transferred_sorted_{}.png".format(artwork.id),
+        File(open(output_file, "rb")),
+    )
+    os.remove(output_file)
+    return
+
+
+def pixel_sort_input(artwork):
     output_file = os.path.join(settings.MEDIA_ROOT, "{}.png".format(uuid.uuid4()))
     pixel_sort_path = os.getenv("PIXEL_SORT_PATH", "pixelsort/pixelsort.py")
     cmd = """
@@ -143,7 +168,7 @@ def make_final_image(artwork):
     # Style transferred slices
     if artwork.style_transferred_image:
         image = Image.open(artwork.style_transferred_image)
-        image = image.resize((canvas.width, canvas.height))
+        image = image.resize((canvas.width, canvas.height), resample=Image.LANCZOS)
         enhancer = ImageEnhance.Sharpness(image)
         image = enhancer.enhance(2.0)
         slices_count = int(os.getenv("STYLE_TRANSFERRED_SLICES_COUNT", 8))
