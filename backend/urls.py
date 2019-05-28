@@ -28,8 +28,8 @@ class ArtworkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Artwork
-        fields = ["full", "thumbnail"]
-        read_only_fields = ["full", "thumbnail"]
+        fields = ["id", "full", "thumbnail"]
+        read_only_fields = ["id", "full", "thumbnail"]
 
     def get_final_image(self, obj):
         request = self.context.get("request")
