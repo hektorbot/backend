@@ -226,9 +226,15 @@ def make_final_image(artwork):
         verse_layer = verse_layer.rotate(text_rotation)
         # Add text layer to main canvas
         canvas.paste(verse_layer, (0, 0), mask=verse_layer)
+    # Save main image
     canvas_io = BytesIO()
     canvas.save(canvas_io, format="JPEG")
     artwork.final_image.save("final_{}.jpg".format(artwork.id), File(canvas_io))
+    # Save thumbnail
+    thumbnail_io = BytesIO()
+    canvas.thumbnail(settings.THUMBNAILS_SIZE)
+    canvas.save(thumbnail_io, format="JPEG")
+    artwork.thumbnail.save("final_{}_thumb.jpg".format(artwork.id), File(thumbnail_io))
 
 
 def populate_available_verses(Verse=Verse, AvailableVerse=AvailableVerse):

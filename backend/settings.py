@@ -45,6 +45,7 @@ ALLOWED_HOSTS = ["127.0.0.1", os.getenv("APP_HOST")]
 
 INSTALLED_APPS = [
     "image_processor.apps.ImageProcessorConfig",
+    "rest_framework",
     "django_q",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -133,10 +134,25 @@ STATIC_URL = "/static/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
+# Thumbnails size
+THUMBNAILS_SIZE = (300, 300)
+
 # Django Q
 # https://django-q.readthedocs.io/en/latest/configure.html
 
 Q_CLUSTER = {"name": "hektor", "redis": {"password": os.getenv("REDIS_PASSWORD", None)}}
+
+# Django REST Framework
+# https://www.django-rest-framework.org/
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 20,
+}
 
 # Logging
 log_file = os.getenv("LOG_FILE", None)
