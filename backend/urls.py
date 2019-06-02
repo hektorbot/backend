@@ -19,21 +19,31 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import url, include
 from django.db.models import Q
-from rest_framework import routers, serializers, viewsets
+from rest_framework import routers, serializers, viewsets, status
+from rest_framework.response import Response
 from image_processor.models import Artwork
+from image_processor import service
 
 
 class ArtworkSerializer(serializers.ModelSerializer):
-    full = serializers.SerializerMethodField("get_final_image")
+    full = serializers.SerializerMethodField("get_final_image_url")
 
     class Meta:
         model = Artwork
-        fields = ["id", "full", "thumbnail"]
-        read_only_fields = ["id", "full", "thumbnail"]
+        fields = ["id", "full", "input_image", "style_image"]
+        read_only_fields = ["id", "final_image", "thumbnail"]
+        extra_kwargs = {
+            "input_image": {"write_only": True},
+            "style_image": {"write_only": True},
+        }
 
-    def get_final_image(self, obj):
-        request = self.context.get("request")
-        return request.build_absolute_uri(obj.final_image.url)
+    def get_final_image_url(self, obj):
+        return self.context["request"].build_absolute_uri(obj.final_image.url)
+
+    def create(self, validated_data):
+        instance = Artwork.objects.create(**validated_data)
+        service.make_artwork(instance)
+        return instance
 
 
 class ArtworkViewSet(viewsets.ModelViewSet):
@@ -41,6 +51,13 @@ class ArtworkViewSet(viewsets.ModelViewSet):
         ~Q(final_image="") & ~Q(final_image=None) & Q(has_failed=False)
     ).order_by("-create_date")
     serializer_class = ArtworkSerializer
+
+    def create(self, request):
+        serializer = ArtworkSerializer(data=request.data, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 router = routers.DefaultRouter()

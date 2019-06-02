@@ -29,8 +29,8 @@ class Artwork(models.Model):
     )
     has_failed = models.BooleanField(default=False)
 
-    def save(self):
-        super(Artwork, self).save()
+    def save(self, *args, **kwargs):
+        super(Artwork, self).save(*args, **kwargs)
         input_image_path = self.input_image.path
         style_image_path = self.style_image.path
         input_image = Image.open(input_image_path)
