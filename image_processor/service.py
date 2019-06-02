@@ -264,11 +264,6 @@ def make_final_image(artwork):
     canvas_io = BytesIO()
     canvas.save(canvas_io, format="JPEG")
     artwork.final_image.save("final_{}.jpg".format(artwork.id), File(canvas_io))
-    # Save thumbnail
-    thumbnail_io = BytesIO()
-    canvas.thumbnail(settings.THUMBNAILS_SIZE)
-    canvas.save(thumbnail_io, format="JPEG")
-    artwork.thumbnail.save("final_{}_thumb.jpg".format(artwork.id), File(thumbnail_io))
 
 
 def populate_available_verses(Verse=Verse, AvailableVerse=AvailableVerse):
