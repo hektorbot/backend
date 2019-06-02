@@ -242,8 +242,11 @@ def make_final_image(artwork):
         font = ImageFont.truetype(font_path, 40 * upscale_factor)
         # Setup text position
         text_width, text_height = draw.textsize(verse, font)
+        diff_x = verse_image.width - text_width
+        diff_y = verse_image.height - text_height
         text_pos_x = randrange(0, max(verse_image.width - text_width, 0))
-        text_pos_y = randrange(0, max(verse_image.height - text_height, 0))
+        text_pos_x = randrange(0, diff_x) if diff_x > 0 else 0
+        text_pos_y = randrange(0, diff_y) if diff_y > 0 else 0
         text_rotation = randrange(-3, 3)
         # Draw text layer
         draw.text((text_pos_x, text_pos_y), verse, font=font, fill=(0, 0, 0, 255))
