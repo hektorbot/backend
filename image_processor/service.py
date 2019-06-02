@@ -244,7 +244,6 @@ def make_final_image(artwork):
         text_width, text_height = draw.textsize(verse, font)
         diff_x = verse_image.width - text_width
         diff_y = verse_image.height - text_height
-        text_pos_x = randrange(0, max(verse_image.width - text_width, 0))
         text_pos_x = randrange(0, diff_x) if diff_x > 0 else 0
         text_pos_y = randrange(0, diff_y) if diff_y > 0 else 0
         text_rotation = randrange(-3, 3)
