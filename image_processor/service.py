@@ -235,13 +235,16 @@ def make_final_image(artwork):
         font_path = os.path.join(
             settings.BASE_DIR, "fonts/IBM_Plex_Mono/IBMPlexMono-BoldItalic.ttf"
         )
-        upscale_factor = 2
-        size_upscaled = (canvas.width * upscale_factor, canvas.height * upscale_factor)
-        verse_image = Image.new("RGBA", size_upscaled, (255, 255, 255, 0))
+        verse_image = Image.new("RGBA", canvas.size, (255, 255, 255, 0))
         draw = ImageDraw.Draw(verse_image)
-        font = ImageFont.truetype(font_path, 40 * upscale_factor)
+        font = ImageFont.truetype(font_path, 40)
         # Setup text position
         text_width, text_height = draw.textsize(verse, font)
+        if text_width > verse_image.width:
+            ratio = text_width / verse_image.width
+            new_height = round(verse_image.height * ratio)
+            verse_image = Image.new("RGBA", (text_width, new_height), (255, 255, 255, 0))
+            draw = ImageDraw.Draw(verse_image)
         diff_x = verse_image.width - text_width
         diff_y = verse_image.height - text_height
         text_pos_x = randrange(0, diff_x) if diff_x > 0 else 0
@@ -250,10 +253,10 @@ def make_final_image(artwork):
         # Draw text layer
         draw.text((text_pos_x, text_pos_y), verse, font=font, fill=(0, 0, 0, 255))
         clipping_mask = Image.open(artwork.style_image)
-        clipping_mask = clipping_mask.resize(size_upscaled)
+        clipping_mask = clipping_mask.resize(verse_image.size)
         verse_layer = Image.composite(
             clipping_mask,
-            Image.new("RGBA", size_upscaled, (255, 255, 255, 0)),
+            Image.new("RGBA", verse_image.size, (255, 255, 255, 0)),
             verse_image,
         )
         verse_layer = verse_layer.rotate(
