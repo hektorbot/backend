@@ -32,6 +32,7 @@ class ArtworkSerializer(serializers.ModelSerializer):
         model = Artwork
         fields = ["id", "full", "thumbnail", "slug", "input_image", "style_image"]
         read_only_fields = ["id", "final_image", "thumbnail", "slug"]
+        lookup_field = "slug"
         extra_kwargs = {
             "input_image": {"write_only": True},
             "style_image": {"write_only": True},
@@ -51,6 +52,7 @@ class ArtworkViewSet(viewsets.ModelViewSet):
         ~Q(final_image="") & ~Q(final_image=None) & Q(has_failed=False)
     ).order_by("-create_date")
     serializer_class = ArtworkSerializer
+    lookup_field = "slug"
 
     def create(self, request):
         serializer = ArtworkSerializer(data=request.data, context={"request": request})
