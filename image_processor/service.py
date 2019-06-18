@@ -36,11 +36,6 @@ def add_colored_slice(artwork):
     image_io = BytesIO()
     image.save(image_io, format="JPEG")
     artwork.colored_image.save("colored_{}.jpg".format(artwork.id), File(image_io))
-    # Save thumbnail
-    thumbnail_io = BytesIO()
-    image.thumbnail(settings.THUMBNAILS_SIZE)
-    image.save(thumbnail_io, format="JPEG")
-    artwork.thumbnail.save("final_{}_thumb.jpg".format(artwork.id), File(thumbnail_io))
     return
 
 
@@ -276,6 +271,11 @@ def make_final_image(artwork):
     canvas_io = BytesIO()
     canvas.save(canvas_io, format="JPEG")
     artwork.final_image.save("final_{}.jpg".format(artwork.id), File(canvas_io))
+    # Save thumbnail
+    thumbnail_io = BytesIO()
+    canvas.thumbnail(settings.THUMBNAILS_SIZE)
+    canvas.save(thumbnail_io, format="JPEG")
+    artwork.thumbnail.save("final_{}_thumb.jpg".format(artwork.id), File(thumbnail_io))
 
 
 def populate_available_verses(Verse=Verse, AvailableVerse=AvailableVerse):
