@@ -17,7 +17,7 @@ def make_thumbnails(apps, schema_editor):
             thumbnail_io = BytesIO()
             image.save(thumbnail_io, format="JPEG")
             artwork.thumbnail.save(
-                "final_{}_thumb.jpg".format(artwork.id), File(thumbnail_io)
+                "{}_thumb.jpg".format(artwork.slug), File(thumbnail_io)
             )
 
 

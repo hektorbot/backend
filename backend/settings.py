@@ -115,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/Toronto"
 
 USE_I18N = True
 
@@ -136,6 +136,9 @@ MEDIA_URL = "/media/"
 
 # Thumbnails size
 THUMBNAILS_SIZE = (250, 250)
+
+# Artwork names format
+ARTWORK_NAME = "saintcamille_{}_{:05d}"
 
 # Django Q
 # https://django-q.readthedocs.io/en/latest/configure.html

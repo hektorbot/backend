@@ -270,12 +270,12 @@ def make_final_image(artwork):
     # Save main image
     canvas_io = BytesIO()
     canvas.save(canvas_io, format="JPEG")
-    artwork.final_image.save("final_{}.jpg".format(artwork.id), File(canvas_io))
+    artwork.final_image.save("{}.jpg".format(artwork.slug), File(canvas_io))
     # Save thumbnail
     thumbnail_io = BytesIO()
     canvas.thumbnail(settings.THUMBNAILS_SIZE)
     canvas.save(thumbnail_io, format="JPEG")
-    artwork.thumbnail.save("final_{}_thumb.jpg".format(artwork.id), File(thumbnail_io))
+    artwork.thumbnail.save("{}_thumb.jpg".format(artwork.slug), File(thumbnail_io))
 
 
 def populate_available_verses(Verse=Verse, AvailableVerse=AvailableVerse):

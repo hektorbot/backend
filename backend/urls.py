@@ -30,8 +30,8 @@ class ArtworkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Artwork
-        fields = ["id", "full", "thumbnail", "input_image", "style_image"]
-        read_only_fields = ["id", "final_image", "thumbnail"]
+        fields = ["id", "full", "thumbnail", "slug", "input_image", "style_image"]
+        read_only_fields = ["id", "final_image", "thumbnail", "slug"]
         extra_kwargs = {
             "input_image": {"write_only": True},
             "style_image": {"write_only": True},
