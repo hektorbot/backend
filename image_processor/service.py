@@ -36,6 +36,11 @@ def add_colored_slice(artwork):
     image_io = BytesIO()
     image.save(image_io, format="JPEG")
     artwork.colored_image.save("colored_{}.jpg".format(artwork.id), File(image_io))
+    # Save thumbnail
+    thumbnail_io = BytesIO()
+    image.thumbnail(settings.THUMBNAILS_SIZE)
+    image.save(thumbnail_io, format="JPEG")
+    artwork.thumbnail.save("final_{}_thumb.jpg".format(artwork.id), File(thumbnail_io))
     return
 
 
@@ -243,7 +248,9 @@ def make_final_image(artwork):
         if text_width > verse_image.width:
             ratio = text_width / verse_image.width
             new_height = round(verse_image.height * ratio)
-            verse_image = Image.new("RGBA", (text_width, new_height), (255, 255, 255, 0))
+            verse_image = Image.new(
+                "RGBA", (text_width, new_height), (255, 255, 255, 0)
+            )
             draw = ImageDraw.Draw(verse_image)
         diff_x = verse_image.width - text_width
         diff_y = verse_image.height - text_height

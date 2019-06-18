@@ -135,7 +135,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
 # Thumbnails size
-THUMBNAILS_SIZE = (300, 300)
+THUMBNAILS_SIZE = (250, 250)
 
 # Django Q
 # https://django-q.readthedocs.io/en/latest/configure.html
