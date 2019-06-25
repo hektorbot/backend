@@ -18,6 +18,7 @@ def make_artwork(artwork):
     pixel_sort_input(artwork)
     pixel_sort_style_transferred(artwork)
     make_final_image(artwork)
+    tweet(artwork)
     return
 
 
@@ -267,6 +268,9 @@ def make_final_image(artwork):
         verse_layer = verse_layer.resize(canvas.size, resample=Image.LANCZOS)
         # Add text layer to main canvas
         canvas.paste(verse_layer, (0, 0), mask=verse_layer)
+        # Persist verse to DB
+        artwork.verse = verse
+        artwork.save()
     # Save main image
     canvas_io = BytesIO()
     canvas.save(canvas_io, format="JPEG")
@@ -294,6 +298,24 @@ def pick_verse():
         av.delete()
         return text
     return ""
+
+
+def tweet(artwork):
+    import twitter
+
+    api = twitter.Api(
+        consumer_key=os.getenv("TWITTER_CONSUMER_KEY", None),
+        consumer_secret=os.getenv("TWITTER_CONSUMER_SECRET", None),
+        access_token_key=os.getenv("TWITTER_ACCESS_TOKEN_KEY", None),
+        access_token_secret=os.getenv("TWITTER_ACCESS_TOKEN_SECRET", None),
+    )
+    try:
+        text = artwork.verse
+        text += " " if text else ""
+        text += "#SaintCamille #GastonGouin"
+        api.PostUpdate(text, media=artwork.final_image.path)
+    except Exception as e:
+        print(e)
 
 
 def get_artworks(page=1, per_page=20):

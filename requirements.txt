@@ -8,3 +8,4 @@ sentry-sdk==0.7.14
 requests
 google-cloud-vision
 djangorestframework
+python-twitter

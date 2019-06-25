@@ -30,6 +30,7 @@ class Artwork(models.Model):
     thumbnail = models.ImageField(
         upload_to="finals/%Y/%m/%d/", default=None, blank=True, null=True
     )
+    verse = models.CharField(max_length=255, default="", blank=True, null=True)
     has_failed = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
