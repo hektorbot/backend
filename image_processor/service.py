@@ -271,15 +271,23 @@ def make_final_image(artwork):
         # Persist verse to DB
         artwork.verse = verse
         artwork.save()
+    # Determine final image mode
+    format = "JPEG"
+    extension = "jpg"
+    if canvas.mode in ("RGBA", "LA"):
+        format = "PNG"
+        extension = "png"
     # Save main image
     canvas_io = BytesIO()
-    canvas.save(canvas_io, format="JPEG")
-    artwork.final_image.save("{}.jpg".format(artwork.slug), File(canvas_io))
+    canvas.save(canvas_io, format)
+    artwork.final_image.save("{}.{}".format(artwork.slug, extension), File(canvas_io))
     # Save thumbnail
     thumbnail_io = BytesIO()
     canvas.thumbnail(settings.THUMBNAILS_SIZE)
-    canvas.save(thumbnail_io, format="JPEG")
-    artwork.thumbnail.save("{}_thumb.jpg".format(artwork.slug), File(thumbnail_io))
+    canvas.save(thumbnail_io, format)
+    artwork.thumbnail.save(
+        "{}_thumb.{}".format(artwork.slug, extension), File(thumbnail_io)
+    )
 
 
 def populate_available_verses(Verse=Verse, AvailableVerse=AvailableVerse):
