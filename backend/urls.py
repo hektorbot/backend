@@ -49,7 +49,10 @@ class ArtworkSerializer(serializers.ModelSerializer):
 
 class ArtworkViewSet(viewsets.ModelViewSet):
     queryset = Artwork.objects.filter(
-        ~Q(final_image="") & ~Q(final_image=None) & Q(has_failed=False)
+        ~Q(final_image="")
+        & ~Q(final_image=None)
+        & Q(has_failed=False)
+        & Q(is_active=True)
     ).order_by("-create_date")
     serializer_class = ArtworkSerializer
     lookup_field = "slug"

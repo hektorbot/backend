@@ -32,6 +32,7 @@ class Artwork(models.Model):
     )
     verse = models.CharField(max_length=255, default="", blank=True, null=True)
     has_failed = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
         super(Artwork, self).save(*args, **kwargs)
