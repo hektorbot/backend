@@ -30,13 +30,20 @@ class ArtworkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Artwork
-        fields = ["id", "full", "thumbnail", "slug", "input_image", "style_image"]
+        fields = [
+            "id",
+            "full",
+            "thumbnail",
+            "slug",
+            "input_image",
+            "style_image",
+            "colored_image",
+            "style_transferred_image",
+            "visually_similar_image",
+            "pixel_sorted_image",
+        ]
         read_only_fields = ["id", "final_image", "thumbnail", "slug"]
         lookup_field = "slug"
-        extra_kwargs = {
-            "input_image": {"write_only": True},
-            "style_image": {"write_only": True},
-        }
 
     def get_final_image_url(self, obj):
         return self.context["request"].build_absolute_uri(obj.final_image.url)
