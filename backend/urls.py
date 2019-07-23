@@ -42,7 +42,16 @@ class ArtworkSerializer(serializers.ModelSerializer):
             "visually_similar_image",
             "pixel_sorted_image",
         ]
-        read_only_fields = ["id", "final_image", "thumbnail", "slug"]
+        read_only_fields = [
+            "id",
+            "final_image",
+            "thumbnail",
+            "slug",
+            "colored_image",
+            "style_transferred_image",
+            "visually_similar_image",
+            "pixel_sorted_image",
+        ]
         lookup_field = "slug"
 
     def get_final_image_url(self, obj):
