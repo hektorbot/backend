@@ -40,6 +40,14 @@ class Artwork(models.Model):
         self.slug = settings.ARTWORK_NAME.format(
             str(format(timezone.localtime(self.create_date), "H\hi")), int(self.id)
         )
+        input_image_path = self.input_image.path
+        style_image_path = self.style_image.path
+        input_image = Image.open(input_image_path)
+        style_image = Image.open(style_image_path)
+        input_image.thumbnail((1200, 1200))
+        style_image.thumbnail((1200, 1200))
+        input_image.save(input_image_path)
+        style_image.save(style_image_path)
 
 
 class Verse(models.Model):
