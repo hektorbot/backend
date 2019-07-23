@@ -45,12 +45,12 @@ class Artwork(models.Model):
             image = Image.open(self.input_image.path)
             image.thumbnail((1200, 1200))
             image.save(self.input_image.path)
-            os.chmod(self.input_image.path, "0o644")
+            os.chmod(self.input_image.path, 0o644)
         if self.style_image:
             image = Image.open(self.style_image.path)
             image.thumbnail((1200, 1200))
             image.save(self.style_image.path)
-            os.chmod(self.style_image.path, "0o644")
+            os.chmod(self.style_image.path, 0o644)
 
 
 class Verse(models.Model):
