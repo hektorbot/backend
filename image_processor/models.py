@@ -36,18 +36,19 @@ class Artwork(models.Model):
 
     def save(self, *args, **kwargs):
         super(Artwork, self).save(*args, **kwargs)
-        # Make slug
-        self.slug = settings.ARTWORK_NAME.format(
-            str(format(timezone.localtime(self.create_date), "H\hi")), int(self.id)
-        )
-        input_image_path = self.input_image.path
-        style_image_path = self.style_image.path
-        input_image = Image.open(input_image_path)
-        style_image = Image.open(style_image_path)
-        input_image.thumbnail((1200, 1200))
-        style_image.thumbnail((1200, 1200))
-        input_image.save(input_image_path)
-        style_image.save(style_image_path)
+        if self.id is not None:
+            # Make slug
+            self.slug = settings.ARTWORK_NAME.format(
+                str(format(timezone.localtime(self.create_date), "H\hi")), int(self.id)
+            )
+        if self.input_image:
+            image = Image.open(self.input_image.path)
+            image.thumbnail((1200, 1200))
+            image.save(self.input_image.path)
+        if self.style_image:
+            image = Image.open(self.style_image.path)
+            image.thumbnail((1200, 1200))
+            image.save(self.style_image.path)
 
 
 class Verse(models.Model):
