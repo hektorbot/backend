@@ -19,6 +19,7 @@ def make_artwork(artwork):
     pixel_sort_style_transferred(artwork)
     make_final_image(artwork)
     tweet(artwork)
+    clear_cache()
     return
 
 
@@ -338,3 +339,13 @@ def get_artworks(page=1, per_page=20):
     paginator = Paginator(artworks_list, per_page)
     artworks = paginator.get_page(page)
     return artworks
+
+
+def clear_cache():
+    if settings.NGINX_CACHE is not None:
+        try:
+            import shutil
+
+            shutil.rmtree(settings.NGINX_CACHE)
+        except Exception as e:
+            print(e)

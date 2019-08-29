@@ -40,6 +40,8 @@ DEBUG = os.getenv("DEBUG", False)
 
 ALLOWED_HOSTS = ["127.0.0.1", os.getenv("APP_HOST")]
 
+NGINX_CACHE = os.getenv("NGINX_CACHE", None)
+
 # Secure scheme header
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "https")
 
