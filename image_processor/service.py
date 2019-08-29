@@ -344,8 +344,6 @@ def get_artworks(page=1, per_page=20):
 def clear_cache():
     if settings.NGINX_CACHE is not None:
         try:
-            import shutil
-
-            shutil.rmtree(settings.NGINX_CACHE)
+            os.system("sudo rm -rf {}".format(settings.NGINX_CACHE))
         except Exception as e:
             print(e)
