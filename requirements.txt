@@ -10,3 +10,4 @@ google-cloud-vision
 djangorestframework
 python-twitter
 django-cors-headers
+rsa>=4.7 # not directly required, pinned by Snyk to avoid a vulnerability
