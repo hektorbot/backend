@@ -4,7 +4,7 @@ redis
 python-dotenv
 Pillow
 gunicorn
-sentry-sdk==0.7.14
+sentry-sdk==2.8.0
 requests
 google-cloud-vision
 djangorestframework
