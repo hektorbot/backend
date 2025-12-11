@@ -10,3 +10,4 @@ google-cloud-vision
 djangorestframework
 python-twitter
 django-cors-headers
+urllib3>=2.6.0 # not directly required, pinned by Snyk to avoid a vulnerability
